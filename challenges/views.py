@@ -19,6 +19,7 @@ monthly_challenges = {
 
 # Create your views here.
 
+
 def index(request):
     list_items = ""
     months = list(monthly_challenges.keys())
@@ -36,7 +37,6 @@ def index(request):
     return HttpResponse(months_list)
 
 
-
 def monthly_challenge_by_number(request, month):
     try:
         monthly_keys_list = list(monthly_challenges.keys())
@@ -45,8 +45,6 @@ def monthly_challenge_by_number(request, month):
         return HttpResponseRedirect(redirect_path)
     except:
         return HttpResponseNotFound("Sorry, month not found.")
-
-    
 
 
 def monthly_challenge(request, month):
