@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect
 from django.urls import reverse
 from django.template.loader import render_to_string
 
@@ -15,27 +15,25 @@ monthly_challenges = {
     "september": "Hi, I'm September!",
     "october": "Hi, I'm October!",
     "november": "Hi, I'm November!",
-    "december": "Hi, I'm December!",
+    "december": None,
 }
 
 # Create your views here.
 
 
 def index(request):
-    list_items = ""
     months = list(monthly_challenges.keys())
 
-    for month in months:
-        month_path = reverse("month-challenge", args=[month])
-        list_items += f"<li><a href='{month_path}'>{month.capitalize()}</a></li>"
+    for month in monthly_challenges:
+        print(monthly_challenges[month])
 
-    months_list = f"""
-        <ul>
-            {list_items}
-        </ul>
-    """
+    def sum():
+        return 1 + 5
 
-    return HttpResponse(months_list)
+    return render(request, "challenges/index.html", {
+        "months": monthly_challenges,
+        "sum": sum
+        })
 
 
 def monthly_challenge_by_number(request, month):
@@ -49,10 +47,16 @@ def monthly_challenge_by_number(request, month):
 
 
 def monthly_challenge(request, month):
-    # try:
+    try:
         challenge_text = monthly_challenges[month]
         # response_data = render_to_string("challenges/challenge.html", {"challenge_text": challenge_text})
         # return HttpResponse(response_data)
-        return render(request, "challenges/challenge.html", {"challenge_text":challenge_text})
-    # except:
-        return HttpResponseNotFound("<h1>Can't find that month</h1>")
+        return render(request, "challenges/challenge.html", {
+            "text":challenge_text,
+            "month": month, 
+            })
+    except:
+        
+        # response_data = render_to_string("404_error.html")
+        # return HttpResponseNotFound(response_data)
+        raise Http404("404.html")
